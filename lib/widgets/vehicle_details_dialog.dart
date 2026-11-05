@@ -60,6 +60,8 @@ class VehicleDetailsDialog extends StatelessWidget {
                 ),
                 child: Column(
                   children: [
+                    _buildDetailRow(Icons.business_outlined, 'Company', vehicle.company),
+                    const Divider(height: 1),
                     _buildDetailRow(Icons.category_outlined, 'Vehicle Type', vehicle.vehicleType),
                     const Divider(height: 1),
                     _buildDetailRow(Icons.directions_car_outlined, 'Make & Model', '${vehicle.brand} ${vehicle.model}'),

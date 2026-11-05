@@ -205,7 +205,7 @@ class DashboardOverviewView extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text('${v.brand} ${v.model} (${v.year})', style: AppTypography.bodyMedium),
-                                  Text('Type: ${v.vehicleType} • Owner: ${v.ownerName}', style: AppTypography.caption),
+                                  Text('${v.company} • ${v.vehicleType}', style: AppTypography.caption),
                                 ],
                               ),
                             ),

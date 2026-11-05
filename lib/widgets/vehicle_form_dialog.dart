@@ -24,6 +24,7 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
   final _formKey = GlobalKey<FormState>();
 
   late TextEditingController _vehicleNumberController;
+  late TextEditingController _companyController;
   late TextEditingController _brandController;
   late TextEditingController _modelController;
   late TextEditingController _yearController;
@@ -40,6 +41,7 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
     super.initState();
     final v = widget.vehicle;
     _vehicleNumberController = TextEditingController(text: v?.vehicleNumber ?? '');
+    _companyController = TextEditingController(text: v?.company ?? '');
     _brandController = TextEditingController(text: v?.brand ?? '');
     _modelController = TextEditingController(text: v?.model ?? '');
     _yearController = TextEditingController(
@@ -72,6 +74,7 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
   @override
   void dispose() {
     _vehicleNumberController.dispose();
+    _companyController.dispose();
     _brandController.dispose();
     _modelController.dispose();
     _yearController.dispose();
@@ -85,14 +88,18 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
       return;
     }
 
+    final companyText = _companyController.text.trim();
+    final ownerText = _ownerNameController.text.trim();
+
     final vehicle = Vehicle(
       id: widget.vehicle?.id,
       vehicleNumber: _vehicleNumberController.text.trim().toUpperCase(),
+      company: companyText,
       vehicleType: _selectedVehicleType,
       brand: _brandController.text.trim(),
       model: _modelController.text.trim(),
       year: int.tryParse(_yearController.text.trim()) ?? DateTime.now().year,
-      ownerName: _ownerNameController.text.trim(),
+      ownerName: ownerText.isNotEmpty ? ownerText : companyText,
       ownerContact: _ownerContactController.text.trim(),
       status: _selectedStatus,
     );
@@ -131,7 +138,7 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
                     controller: _vehicleNumberController,
                     textCapitalization: TextCapitalization.characters,
                     decoration: const InputDecoration(
-                      hintText: 'Enter vehicle number',
+                      hintText: 'Enter vehicle number (e.g. DM-GHA-11-2233)',
                       prefixIcon: Icon(Icons.pin_outlined),
                     ),
                     validator: (value) {
@@ -146,6 +153,23 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
 
                       if (isDuplicate) {
                         return 'A vehicle with this number already exists!';
+                      }
+                      return null;
+                    },
+                  ),
+                  const SizedBox(height: AppSpacing.lg),
+
+                  // Form Field: Company (Matches Stark Group / Master Prompt)
+                  _buildFieldLabel('Company *'),
+                  TextFormField(
+                    controller: _companyController,
+                    decoration: const InputDecoration(
+                      hintText: 'Enter company or fleet name (e.g. Stark Industries)',
+                      prefixIcon: Icon(Icons.business_outlined),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Company name is required';
                       }
                       return null;
                     },

@@ -182,6 +182,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
     return _vehicles.where((v) {
       final matchesSearch = _searchQuery.isEmpty ||
           v.vehicleNumber.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+          v.company.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           v.brand.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           v.model.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           v.ownerName.toLowerCase().contains(_searchQuery.toLowerCase());
@@ -547,17 +548,16 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                 child: Table(
                   columnWidths: const {
                     0: FlexColumnWidth(1.6), // Vehicle No.
-                    1: FlexColumnWidth(1.0), // Type
-                    2: FlexColumnWidth(1.8), // Make / Model
-                    3: FlexColumnWidth(0.8), // Year
-                    4: FlexColumnWidth(1.5), // Owner Name
-                    5: FlexColumnWidth(1.4), // Contact
-                    6: FlexColumnWidth(1.2), // Status
-                    7: FlexColumnWidth(1.4), // Actions
+                    1: FlexColumnWidth(1.5), // Company
+                    2: FlexColumnWidth(1.0), // Type
+                    3: FlexColumnWidth(1.2), // Brand
+                    4: FlexColumnWidth(1.3), // Model
+                    5: FlexColumnWidth(1.2), // Status
+                    6: FlexColumnWidth(1.4), // Actions
                   },
                   defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                   children: [
-                    // Header Row
+                    // Header Row: Exactly matches master prompt fields
                     TableRow(
                       decoration: const BoxDecoration(
                         color: AppColors.tableHeaderBg,
@@ -565,11 +565,10 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                       ),
                       children: [
                         _buildHeaderCell('VEHICLE NO.'),
+                        _buildHeaderCell('COMPANY'),
                         _buildHeaderCell('TYPE'),
-                        _buildHeaderCell('MAKE / MODEL'),
-                        _buildHeaderCell('YEAR'),
-                        _buildHeaderCell('OWNER'),
-                        _buildHeaderCell('CONTACT'),
+                        _buildHeaderCell('BRAND'),
+                        _buildHeaderCell('MODEL'),
                         _buildHeaderCell('STATUS'),
                         _buildHeaderCell('ACTIONS', align: TextAlign.center),
                       ],
@@ -597,7 +596,19 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                               child: RegistrationPlateBadge(plateNumber: v.vehicleNumber),
                             ),
                           ),
-                          // 2. Type
+                          // 2. Company
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpacing.lg,
+                              vertical: AppSpacing.md,
+                            ),
+                            child: Text(
+                              v.company,
+                              style: AppTypography.bodyMedium,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          // 3. Type
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.lg,
@@ -605,48 +616,23 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                             ),
                             child: Text(v.vehicleType, style: AppTypography.body),
                           ),
-                          // 3. Make / Model
+                          // 4. Brand
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.lg,
                               vertical: AppSpacing.md,
                             ),
-                            child: Text(
-                              '${v.brand} ${v.model}',
-                              style: AppTypography.bodyMedium,
-                            ),
+                            child: Text(v.brand, style: AppTypography.bodyMedium),
                           ),
-                          // 4. Year
+                          // 5. Model
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.lg,
                               vertical: AppSpacing.md,
                             ),
-                            child: Text(
-                              '${v.year}',
-                              style: AppTypography.body.copyWith(color: AppColors.textSecondary),
-                            ),
+                            child: Text(v.model, style: AppTypography.body),
                           ),
-                          // 5. Owner Name
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.lg,
-                              vertical: AppSpacing.md,
-                            ),
-                            child: Text(v.ownerName, style: AppTypography.body),
-                          ),
-                          // 6. Contact
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: AppSpacing.lg,
-                              vertical: AppSpacing.md,
-                            ),
-                            child: Text(
-                              v.ownerContact,
-                              style: AppTypography.body.copyWith(color: AppColors.textSecondary),
-                            ),
-                          ),
-                          // 7. Status Pill
+                          // 6. Status Pill
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.lg,
@@ -657,7 +643,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                               child: StatusBadge(status: v.status),
                             ),
                           ),
-                          // 8. Actions
+                          // 7. Actions
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: AppSpacing.sm,
@@ -733,7 +719,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  '${v.vehicleType} • ${v.ownerName} (${v.ownerContact})',
+                  '${v.company} • ${v.vehicleType}',
                   style: AppTypography.caption,
                 ),
                 const Divider(height: AppSpacing.xxl),

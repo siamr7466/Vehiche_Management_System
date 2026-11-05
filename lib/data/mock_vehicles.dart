@@ -8,6 +8,7 @@ class MockVehicleData {
       Vehicle(
         id: 1,
         vehicleNumber: 'DM-GHA-11-2233',
+        company: 'Stark Industries',
         vehicleType: 'Car',
         brand: 'Toyota',
         model: 'Corolla Altis',
@@ -19,6 +20,7 @@ class MockVehicleData {
       Vehicle(
         id: 2,
         vehicleNumber: 'DH-MET-54-9812',
+        company: 'Apex Logistics',
         vehicleType: 'SUV',
         brand: 'Honda',
         model: 'CR-V Turbo',
@@ -30,6 +32,7 @@ class MockVehicleData {
       Vehicle(
         id: 3,
         vehicleNumber: 'CTG-TA-77-4321',
+        company: 'Stark Freight Corp',
         vehicleType: 'Truck',
         brand: 'Ford',
         model: 'F-150 SuperDuty',
@@ -41,6 +44,7 @@ class MockVehicleData {
       Vehicle(
         id: 4,
         vehicleNumber: 'SYL-LA-23-1109',
+        company: 'Metro Express',
         vehicleType: 'Motorcycle',
         brand: 'Yamaha',
         model: 'MT-15 V2',
@@ -52,6 +56,7 @@ class MockVehicleData {
       Vehicle(
         id: 5,
         vehicleNumber: 'RAJ-CHA-88-5544',
+        company: 'Pacific Trans',
         vehicleType: 'Van',
         brand: 'Toyota',
         model: 'HiAce Commuter',
@@ -63,6 +68,7 @@ class MockVehicleData {
       Vehicle(
         id: 6,
         vehicleNumber: 'BAR-BA-99-3321',
+        company: 'Stark Mobility Services',
         vehicleType: 'Bus',
         brand: 'Scania',
         model: 'Touring HD',
