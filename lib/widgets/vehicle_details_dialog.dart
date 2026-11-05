@@ -24,7 +24,7 @@ class VehicleDetailsDialog extends StatelessWidget {
       backgroundColor: AppColors.white,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 500),
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(AppSpacing.xxl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -77,8 +77,10 @@ class VehicleDetailsDialog extends StatelessWidget {
               const SizedBox(height: AppSpacing.xxl),
 
               // Bottom Actions: Matches Component Examples
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              Wrap(
+                alignment: WrapAlignment.end,
+                spacing: AppSpacing.md,
+                runSpacing: AppSpacing.sm,
                 children: [
                   // Matches "Delete Action" Component Example
                   DeleteActionButton(
@@ -87,7 +89,6 @@ class VehicleDetailsDialog extends StatelessWidget {
                       onDelete();
                     },
                   ),
-                  const SizedBox(width: AppSpacing.md),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.edit_outlined, size: 16),
                     label: const Text('Edit Vehicle'),
@@ -113,8 +114,15 @@ class VehicleDetailsDialog extends StatelessWidget {
           Icon(icon, size: 16, color: AppColors.textSecondary),
           const SizedBox(width: AppSpacing.sm + 2),
           Text(label, style: AppTypography.caption.copyWith(fontSize: 13)),
-          const Spacer(),
-          Text(value, style: AppTypography.bodyMedium),
+          const SizedBox(width: AppSpacing.md),
+          Expanded(
+            child: Text(
+              value,
+              textAlign: TextAlign.right,
+              style: AppTypography.bodyMedium,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
         ],
       ),
     );

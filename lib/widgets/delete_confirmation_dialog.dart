@@ -68,14 +68,15 @@ class DeleteConfirmationDialog extends StatelessWidget {
               const SizedBox(height: AppSpacing.xxl),
 
               // Action Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+              Wrap(
+                alignment: WrapAlignment.end,
+                spacing: AppSpacing.md,
+                runSpacing: AppSpacing.sm,
                 children: [
                   OutlinedButton(
                     onPressed: () => Navigator.of(context).pop(),
                     child: const Text('Cancel'),
                   ),
-                  const SizedBox(width: AppSpacing.md),
                   ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.red, // Red #D32F2F (Delete / Error only)

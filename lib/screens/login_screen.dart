@@ -79,8 +79,8 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.xxxl,
-                  vertical: AppSpacing.xxxl + 4,
+                  horizontal: AppSpacing.xl,
+                  vertical: AppSpacing.xxl,
                 ),
                 child: Form(
                   key: _formKey,
@@ -211,7 +211,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                       // Demo Credentials Box
                       Container(
-                        padding: const EdgeInsets.all(AppSpacing.md + 2),
+                        padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
                           color: AppColors.primaryLight,
                           borderRadius: BorderRadius.circular(AppSpacing.radiusInput),
@@ -219,25 +219,31 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         child: Column(
                           children: [
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.key_outlined, size: 15, color: AppColors.deepBlue),
-                                SizedBox(width: AppSpacing.xs + 2),
-                                Text(
-                                  'Demo Administrator Account',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 12.5,
-                                    color: AppColors.deepBlue,
+                            const FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.key_outlined, size: 15, color: AppColors.deepBlue),
+                                  SizedBox(width: AppSpacing.xs + 2),
+                                  Text(
+                                    'Demo Administrator Account',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12.5,
+                                      color: AppColors.deepBlue,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                             const SizedBox(height: AppSpacing.xs),
-                            const Text(
-                              'Username: admin  •  Password: admin',
-                              style: TextStyle(fontSize: 12.5, color: AppColors.charcoal),
+                            const FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                'Username: admin  •  Password: admin',
+                                style: TextStyle(fontSize: 12.5, color: AppColors.charcoal),
+                              ),
                             ),
                             const SizedBox(height: AppSpacing.sm),
                             InkWell(
@@ -245,21 +251,24 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(AppSpacing.radiusBadge),
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(Icons.auto_fix_high, size: 14, color: AppColors.deepBlue),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      'Auto-fill credentials',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: AppColors.deepBlue,
-                                        decoration: TextDecoration.underline,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(Icons.auto_fix_high, size: 14, color: AppColors.deepBlue),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        'Auto-fill credentials',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.deepBlue,
+                                          decoration: TextDecoration.underline,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),

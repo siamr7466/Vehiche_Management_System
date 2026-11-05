@@ -186,13 +186,14 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
                             _buildFieldLabel('Vehicle Type *'),
                             DropdownButtonFormField<String>(
                               initialValue: _selectedVehicleType,
+                              isExpanded: true,
                               decoration: const InputDecoration(
                                 prefixIcon: Icon(Icons.category_outlined),
                               ),
                               items: AppConstants.vehicleTypes.map((String type) {
                                 return DropdownMenuItem<String>(
                                   value: type,
-                                  child: Text(type),
+                                  child: Text(type, overflow: TextOverflow.ellipsis),
                                 );
                               }).toList(),
                               onChanged: (val) {
@@ -210,13 +211,14 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
                             _buildFieldLabel('Status *'),
                             DropdownButtonFormField<String>(
                               initialValue: _selectedStatus,
+                              isExpanded: true,
                               decoration: const InputDecoration(
                                 prefixIcon: Icon(Icons.flag_outlined),
                               ),
                               items: AppConstants.vehicleStatuses.map((String status) {
                                 return DropdownMenuItem<String>(
                                   value: status,
-                                  child: Text(status),
+                                  child: Text(status, overflow: TextOverflow.ellipsis),
                                 );
                               }).toList(),
                               onChanged: (val) {
@@ -322,14 +324,15 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
                   const SizedBox(height: AppSpacing.xxl),
 
                   // Action Buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  Wrap(
+                    alignment: WrapAlignment.end,
+                    spacing: AppSpacing.md,
+                    runSpacing: AppSpacing.sm,
                     children: [
                       OutlinedButton(
                         onPressed: () => Navigator.of(context).pop(),
                         child: const Text('Cancel'),
                       ),
-                      const SizedBox(width: AppSpacing.md),
                       ElevatedButton.icon(
                         icon: const Icon(Icons.check, size: 18),
                         label: Text(isEditing ? 'Save Changes' : 'Register Vehicle'),
