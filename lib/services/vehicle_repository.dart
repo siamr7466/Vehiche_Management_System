@@ -1,54 +1,32 @@
-import '../data/mock_vehicles.dart';
 import '../models/vehicle.dart';
+import 'api_service.dart';
 
 /// Vehicle Repository:
-/// Currently operates exclusively on Temporary Mock Data.
-/// All CRUD operations run in-memory without making any backend or API calls yet.
+/// Connected directly to the Spring Boot REST API & PostgreSQL SQL Database.
+/// Replaces temporary in-memory mock data with live backend persistence.
 class VehicleRepository {
-  // In-memory vehicle dataset initialized with mock records
-  final List<Vehicle> _localVehicles = MockVehicleData.getInitialVehicles();
-  int _nextLocalId = 7;
+  final ApiService _apiService = ApiService();
 
-  /// Fetch all vehicles from the mock store
+  /// Fetch all vehicles from the Spring Boot REST API
   Future<List<Vehicle>> getVehicles() async {
-    // Small delay to simulate realistic responsive loading
-    await Future.delayed(const Duration(milliseconds: 200));
-    return List.from(_localVehicles);
+    return await _apiService.getAllVehicles();
   }
 
-  /// Check whether a vehicle registration number is already in use
-  bool isDuplicate(String vehicleNumber, List<Vehicle> currentList, [int? currentId]) {
-    final normalized = vehicleNumber.trim().toUpperCase();
-    return currentList.any((v) {
-      if (currentId != null && v.id == currentId) return false;
-      return v.vehicleNumber.toUpperCase() == normalized;
-    });
-  }
-
-  /// Add / Register a new vehicle in the mock store
+  /// Add / Register a new vehicle in the SQL database via Spring Boot
   Future<Vehicle> addVehicle(Vehicle vehicle) async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    final newVehicle = vehicle.copyWith(id: _nextLocalId++);
-    _localVehicles.add(newVehicle);
-    return newVehicle;
+    return await _apiService.createVehicle(vehicle);
   }
 
-  /// Update an existing vehicle in the mock store
+  /// Update an existing vehicle in the SQL database via Spring Boot
   Future<Vehicle> updateVehicle(Vehicle vehicle) async {
     if (vehicle.id == null) {
       throw Exception('Cannot update vehicle without an ID');
     }
-    await Future.delayed(const Duration(milliseconds: 150));
-    final index = _localVehicles.indexWhere((v) => v.id == vehicle.id);
-    if (index != -1) {
-      _localVehicles[index] = vehicle;
-    }
-    return vehicle;
+    return await _apiService.updateVehicle(vehicle.id!, vehicle);
   }
 
-  /// Delete a vehicle by ID from the mock store
+  /// Delete a vehicle by ID from the SQL database via Spring Boot
   Future<void> deleteVehicle(int id) async {
-    await Future.delayed(const Duration(milliseconds: 150));
-    _localVehicles.removeWhere((v) => v.id == id);
+    await _apiService.deleteVehicle(id);
   }
 }

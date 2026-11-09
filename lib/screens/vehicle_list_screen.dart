@@ -30,6 +30,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
   NavPage _currentPage = NavPage.vehicles; // Default to Vehicles list
   List<Vehicle> _vehicles = [];
   bool _isLoading = true;
+  String? _errorMessage;
   String _searchQuery = '';
   String _selectedTypeFilter = 'All';
   String _selectedStatusFilter = 'All';
@@ -47,25 +48,29 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
   }
 
   Future<void> _loadVehicles() async {
-    setState(() => _isLoading = true);
-
-    final data = await _repository.getVehicles();
     setState(() {
-      _vehicles = List.from(data);
-      _isLoading = false;
+      _isLoading = true;
+      _errorMessage = null;
     });
+
+    try {
+      final data = await _repository.getVehicles();
+      setState(() {
+        _vehicles = List.from(data);
+        _isLoading = false;
+      });
+    } catch (e) {
+      final err = e.toString().replaceFirst('Exception: ', '');
+      setState(() {
+        _errorMessage = err;
+        _isLoading = false;
+      });
+      _showSnackBar(err, AppColors.inactive);
+    }
   }
 
-  // Register / Add a new vehicle
+  // Register / Add a new vehicle (Spring Boot applies validation & business rules)
   Future<void> _addVehicle(Vehicle vehicle) async {
-    if (_repository.isDuplicate(vehicle.vehicleNumber, _vehicles)) {
-      _showSnackBar(
-        'Duplicate Error: Vehicle "${vehicle.vehicleNumber}" is already registered!',
-        AppColors.inactive,
-      );
-      return;
-    }
-
     try {
       final created = await _repository.addVehicle(vehicle);
       setState(() => _vehicles.add(created));
@@ -74,21 +79,15 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         AppColors.active,
       );
     } catch (e) {
-      _showSnackBar(e.toString().replaceFirst('Exception: ', ''), AppColors.inactive);
+      final err = e.toString().replaceFirst('Exception: ', '');
+      _showSnackBar(err, AppColors.inactive);
+      rethrow;
     }
   }
 
-  // Edit / Update an existing vehicle
+  // Edit / Update an existing vehicle (Spring Boot applies validation & business rules)
   Future<void> _updateVehicle(Vehicle vehicle) async {
     if (vehicle.id == null) return;
-
-    if (_repository.isDuplicate(vehicle.vehicleNumber, _vehicles, vehicle.id)) {
-      _showSnackBar(
-        'Duplicate Error: Vehicle "${vehicle.vehicleNumber}" is already used by another record!',
-        AppColors.inactive,
-      );
-      return;
-    }
 
     try {
       final updated = await _repository.updateVehicle(vehicle);
@@ -101,7 +100,9 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         AppColors.active,
       );
     } catch (e) {
-      _showSnackBar(e.toString().replaceFirst('Exception: ', ''), AppColors.inactive);
+      final err = e.toString().replaceFirst('Exception: ', '');
+      _showSnackBar(err, AppColors.inactive);
+      rethrow;
     }
   }
 
@@ -117,7 +118,8 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         AppColors.maintenance,
       );
     } catch (e) {
-      _showSnackBar(e.toString().replaceFirst('Exception: ', ''), AppColors.inactive);
+      final err = e.toString().replaceFirst('Exception: ', '');
+      _showSnackBar(err, AppColors.inactive);
     }
   }
 
@@ -156,11 +158,11 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
       builder: (ctx) => VehicleFormDialog(
         vehicle: vehicle,
         existingVehicles: _vehicles,
-        onSave: (savedVehicle) {
+        onSave: (savedVehicle) async {
           if (vehicle == null) {
-            _addVehicle(savedVehicle);
+            await _addVehicle(savedVehicle);
           } else {
-            _updateVehicle(savedVehicle);
+            await _updateVehicle(savedVehicle);
           }
         },
       ),
@@ -246,7 +248,9 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                         padding: const EdgeInsets.all(AppSpacing.xxl),
                         child: _isLoading
                             ? const Center(child: CircularProgressIndicator())
-                            : _buildCurrentPageContent(),
+                            : _errorMessage != null && _vehicles.isEmpty
+                                ? _buildErrorState()
+                                : _buildCurrentPageContent(),
                       ),
                     ),
                   ],
@@ -504,6 +508,38 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                 ? 'Register your first vehicle to begin managing the fleet.'
                 : 'Try adjusting your search keywords or filter criteria.',
             style: AppTypography.caption,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildErrorState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: AppColors.inactive.withValues(alpha: 0.1),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.cloud_off_rounded, size: 48, color: AppColors.inactive),
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          const Text('Unable to connect to backend', style: AppTypography.cardTitle),
+          const SizedBox(height: AppSpacing.xs),
+          Text(
+            _errorMessage ?? 'Check if the Spring Boot server is running on port 8080.',
+            textAlign: TextAlign.center,
+            style: AppTypography.caption,
+          ),
+          const SizedBox(height: AppSpacing.lg),
+          ElevatedButton.icon(
+            onPressed: _loadVehicles,
+            icon: const Icon(Icons.refresh, size: 18),
+            label: const Text('Retry Connection'),
           ),
         ],
       ),

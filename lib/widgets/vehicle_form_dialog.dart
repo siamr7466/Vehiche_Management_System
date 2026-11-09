@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
 import '../constants/app_theme.dart';
@@ -6,8 +7,8 @@ import 'app_dialog_header.dart';
 
 class VehicleFormDialog extends StatefulWidget {
   final Vehicle? vehicle; // null if adding new, non-null if editing
-  final List<Vehicle> existingVehicles; // For client-side duplicate check
-  final void Function(Vehicle vehicle) onSave;
+  final List<Vehicle> existingVehicles;
+  final FutureOr<void> Function(Vehicle vehicle) onSave;
 
   const VehicleFormDialog({
     super.key,
@@ -33,6 +34,9 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
 
   late String _selectedVehicleType;
   late String _selectedStatus;
+
+  bool _isSubmitting = false;
+  String? _errorMessage;
 
   bool get isEditing => widget.vehicle != null;
 
@@ -83,10 +87,15 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
     super.dispose();
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
+
+    setState(() {
+      _isSubmitting = true;
+      _errorMessage = null;
+    });
 
     final companyText = _companyController.text.trim();
     final ownerText = _ownerNameController.text.trim();
@@ -104,8 +113,19 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
       status: _selectedStatus,
     );
 
-    widget.onSave(vehicle);
-    Navigator.of(context).pop();
+    try {
+      await widget.onSave(vehicle);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+          _errorMessage = e.toString().replaceFirst('Exception: ', '');
+        });
+      }
+    }
   }
 
   @override
@@ -132,7 +152,35 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
                         : 'Enter vehicle details below to add to the fleet',
                   ),
 
-                  // Form Field: Vehicle Number (Matches Component Example)
+                  // Backend Error Banner
+                  if (_errorMessage != null) ...[
+                    Container(
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      margin: const EdgeInsets.only(bottom: AppSpacing.lg),
+                      decoration: BoxDecoration(
+                        color: AppColors.deleteBg,
+                        borderRadius: BorderRadius.circular(AppSpacing.radiusInput),
+                        border: Border.all(color: AppColors.deleteBorder),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(Icons.error_outline, color: AppColors.red, size: 18),
+                          const SizedBox(width: AppSpacing.sm),
+                          Expanded(
+                            child: Text(
+                              _errorMessage!,
+                              style: AppTypography.caption.copyWith(
+                                color: AppColors.red,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+
+                  // Form Field: Vehicle Number (Validated by Spring Boot)
                   _buildFieldLabel('Vehicle Number *'),
                   TextFormField(
                     controller: _vehicleNumberController,
@@ -144,15 +192,6 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
                     validator: (value) {
                       if (value == null || value.trim().isEmpty) {
                         return 'Vehicle number is required';
-                      }
-                      final trimmedUpper = value.trim().toUpperCase();
-                      final isDuplicate = widget.existingVehicles.any((v) {
-                        if (isEditing && v.id == widget.vehicle?.id) return false;
-                        return v.vehicleNumber.toUpperCase() == trimmedUpper;
-                      });
-
-                      if (isDuplicate) {
-                        return 'A vehicle with this number already exists!';
                       }
                       return null;
                     },
@@ -330,13 +369,26 @@ class _VehicleFormDialogState extends State<VehicleFormDialog> {
                     runSpacing: AppSpacing.sm,
                     children: [
                       OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: _isSubmitting ? null : () => Navigator.of(context).pop(),
                         child: const Text('Cancel'),
                       ),
                       ElevatedButton.icon(
-                        icon: const Icon(Icons.check, size: 18),
-                        label: Text(isEditing ? 'Save Changes' : 'Register Vehicle'),
-                        onPressed: _submit,
+                        icon: _isSubmitting
+                            ? const SizedBox(
+                                width: 16,
+                                height: 16,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              )
+                            : const Icon(Icons.check, size: 18),
+                        label: Text(
+                          _isSubmitting
+                              ? 'Saving...'
+                              : (isEditing ? 'Save Changes' : 'Register Vehicle'),
+                        ),
+                        onPressed: _isSubmitting ? null : _submit,
                       ),
                     ],
                   ),

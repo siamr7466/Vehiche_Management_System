@@ -82,35 +82,19 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
           ],
 
           // Notification Bell
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.notifications_none_rounded, size: 21, color: AppColors.textSecondary),
-                tooltip: 'Notifications (All systems operational)',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: const Text('Fleet systems operational. No unread maintenance alerts.'),
-                      behavior: SnackBarBehavior.floating,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                      duration: const Duration(seconds: 2),
-                    ),
-                  );
-                },
-              ),
-              Positioned(
-                top: 10,
-                right: 10,
-                child: Container(
-                  width: 7,
-                  height: 7,
-                  decoration: const BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
+          IconButton(
+            icon: const Icon(Icons.notifications_none_rounded, size: 21, color: AppColors.textSecondary),
+            tooltip: 'No new notifications',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('No new notifications.'),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  duration: const Duration(seconds: 2),
                 ),
-              ),
-            ],
+              );
+            },
           ),
           const SizedBox(width: AppSpacing.sm),
 

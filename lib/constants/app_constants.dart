@@ -1,6 +1,20 @@
 class AppConstants {
-  // Spring Boot backend REST API base URL
-  static const String baseUrl = 'http://localhost:8080/api/vehicles';
+  // Production API base URL is injected at build time via:
+  //   flutter build web --dart-define=API_BASE_URL=https://your-render-url.onrender.com
+  //
+  // For local development, falls back to localhost:8080 automatically.
+  // Never put production credentials or secrets in this file.
+  static const String apiBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://localhost:8080',
+  );
+
+  static const String vehiclesEndpoint = '$apiBaseUrl/api/vehicles';
+  static const String authLoginEndpoint = '$apiBaseUrl/api/auth/login';
+  static const String authLogoutEndpoint = '$apiBaseUrl/api/auth/logout';
+
+  // Backward compatibility alias
+  static const String baseUrl = vehiclesEndpoint;
 
   // Supported vehicle types
   static const List<String> vehicleTypes = [
@@ -19,4 +33,3 @@ class AppConstants {
     'Inactive',
   ];
 }
-

@@ -49,17 +49,10 @@ class _LoginScreenState extends State<LoginScreen> {
     } else {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Invalid credentials. Enter "admin" and "admin".';
+        _errorMessage = AuthService.lastErrorMessage ??
+            'Invalid username or password.';
       });
     }
-  }
-
-  void _fillDemoCredentials() {
-    setState(() {
-      _usernameController.text = 'admin';
-      _passwordController.text = 'admin';
-      _errorMessage = null;
-    });
   }
 
   @override
@@ -144,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _usernameController,
                         decoration: const InputDecoration(
-                          hintText: 'admin',
+                          hintText: 'Enter username',
                           prefixIcon: Icon(Icons.person_outline),
                         ),
                         validator: (value) {
@@ -162,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         controller: _passwordController,
                         obscureText: _obscurePassword,
                         decoration: InputDecoration(
-                          hintText: 'admin',
+                          hintText: 'Enter password',
                           prefixIcon: const Icon(Icons.lock_outline),
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -205,74 +198,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 )
                               : const Text('Sign In to Dashboard'),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.xxl),
-
-                      // Demo Credentials Box
-                      Container(
-                        padding: const EdgeInsets.all(AppSpacing.md),
-                        decoration: BoxDecoration(
-                          color: AppColors.primaryLight,
-                          borderRadius: BorderRadius.circular(AppSpacing.radiusInput),
-                          border: Border.all(color: AppColors.corporateBlue.withValues(alpha: 0.3)),
-                        ),
-                        child: Column(
-                          children: [
-                            const FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Icon(Icons.key_outlined, size: 15, color: AppColors.deepBlue),
-                                  SizedBox(width: AppSpacing.xs + 2),
-                                  Text(
-                                    'Demo Administrator Account',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12.5,
-                                      color: AppColors.deepBlue,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.xs),
-                            const FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(
-                                'Username: admin  •  Password: admin',
-                                style: TextStyle(fontSize: 12.5, color: AppColors.charcoal),
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            InkWell(
-                              onTap: _fillDemoCredentials,
-                              borderRadius: BorderRadius.circular(AppSpacing.radiusBadge),
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(Icons.auto_fix_high, size: 14, color: AppColors.deepBlue),
-                                      SizedBox(width: 4),
-                                      Text(
-                                        'Auto-fill credentials',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.bold,
-                                          color: AppColors.deepBlue,
-                                          decoration: TextDecoration.underline,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
                         ),
                       ),
                     ],
