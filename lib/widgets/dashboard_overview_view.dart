@@ -75,8 +75,11 @@ class DashboardOverviewView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Wrap(
+                        alignment: WrapAlignment.spaceBetween,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: AppSpacing.md,
+                        runSpacing: AppSpacing.xs,
                         children: [
                           const Text('Fleet by Vehicle Type', style: AppTypography.cardHeading),
                           TextButton(
@@ -175,8 +178,11 @@ class DashboardOverviewView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: AppSpacing.md,
+                    runSpacing: AppSpacing.sm,
                     children: [
                       const Text('Recently Registered Vehicles', style: AppTypography.cardHeading),
                       OutlinedButton.icon(

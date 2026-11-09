@@ -23,13 +23,19 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isCompact = screenWidth < 600;
+    final isVeryCompact = screenWidth < 460;
+
     return Container(
       height: AppSpacing.topBarHeight,
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(bottom: BorderSide(color: AppColors.border, width: 1)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
+      padding: EdgeInsets.symmetric(
+        horizontal: isCompact ? AppSpacing.md : AppSpacing.xxl,
+      ),
       child: Row(
         children: [
           // Mobile Hamburger Button
@@ -37,36 +43,44 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
             IconButton(
               icon: const Icon(Icons.menu, color: AppColors.textPrimary, size: 20),
               onPressed: onMenuPressed,
+              tooltip: 'Open Navigation Menu',
             ),
-            const SizedBox(width: AppSpacing.sm),
+            const SizedBox(width: AppSpacing.xs),
           ],
 
-          // Breadcrumbs Navigation Hierarchy
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'VehiclePro',
-                style: AppTypography.caption.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textSecondary,
+          // Breadcrumbs Navigation Hierarchy (responsive on small screens)
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (!isVeryCompact) ...[
+                  Text(
+                    'VehiclePro',
+                    style: AppTypography.caption.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+                    child: Text(
+                      '/',
+                      style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                    ),
+                  ),
+                ],
+                Flexible(
+                  child: Text(
+                    currentPageName,
+                    style: AppTypography.caption.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.textPrimary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-                child: Text(
-                  '/',
-                  style: TextStyle(color: AppColors.textMuted, fontSize: 13),
-                ),
-              ),
-              Text(
-                currentPageName,
-                style: AppTypography.caption.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
 
           const Spacer(),
@@ -96,12 +110,12 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
               );
             },
           ),
-          const SizedBox(width: AppSpacing.sm),
+          const SizedBox(width: AppSpacing.xs),
 
-          // User Profile Pill
+          // User Profile Pill (adapts to icon-only on mobile)
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.sm + 2,
+            padding: EdgeInsets.symmetric(
+              horizontal: isVeryCompact ? AppSpacing.xs + 2 : AppSpacing.sm + 2,
               vertical: AppSpacing.xs + 1,
             ),
             decoration: BoxDecoration(
@@ -130,11 +144,13 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ),
-                const SizedBox(width: AppSpacing.sm),
-                Text(
-                  AuthService.currentUser ?? 'Admin',
-                  style: AppTypography.bodyMedium.copyWith(fontSize: 12.5),
-                ),
+                if (!isVeryCompact) ...[
+                  const SizedBox(width: AppSpacing.sm),
+                  Text(
+                    AuthService.currentUser ?? 'Admin',
+                    style: AppTypography.bodyMedium.copyWith(fontSize: 12.5),
+                  ),
+                ],
               ],
             ),
           ),

@@ -245,12 +245,12 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                     // Main Content Workspace
                     Expanded(
                       child: Padding(
-                        padding: const EdgeInsets.all(AppSpacing.xxl),
+                        padding: EdgeInsets.all(isDesktop ? AppSpacing.xxl : AppSpacing.md),
                         child: _isLoading
                             ? const Center(child: CircularProgressIndicator())
                             : _errorMessage != null && _vehicles.isEmpty
                                 ? _buildErrorState()
-                                : _buildCurrentPageContent(),
+                                : _buildCurrentPageContent(isDesktop: isDesktop),
                       ),
                     ),
                   ],
@@ -263,7 +263,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
     );
   }
 
-  Widget _buildCurrentPageContent() {
+  Widget _buildCurrentPageContent({bool isDesktop = true}) {
     if (_currentPage == NavPage.dashboard) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -301,7 +301,7 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
           onAction: () => _openVehicleFormDialog(),
         ),
 
-        // Metrics Summary Row
+        // Metrics Summary Row (Adaptive wrap)
         Wrap(
           spacing: AppSpacing.md,
           runSpacing: AppSpacing.sm,
