@@ -4,9 +4,10 @@ class AppConstants {
   //
   // For local development, falls back to localhost:8080 automatically.
   // Never put production credentials or secrets in this file.
+  // Production API base URL (falls back to live Render backend)
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'http://localhost:8080',
+    defaultValue: 'https://vms-backend-jjch.onrender.com',
   );
 
   static const String vehiclesEndpoint = '$apiBaseUrl/api/vehicles';
