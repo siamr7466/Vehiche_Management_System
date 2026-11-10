@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../constants/app_constants.dart';
@@ -27,7 +28,7 @@ class AuthService {
               'password': password,
             }),
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 60));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = jsonDecode(response.body);
@@ -43,6 +44,13 @@ class AuthService {
             'Invalid username or password. Please verify your credentials.';
         return false;
       }
+    } on TimeoutException {
+      isLoggedIn = false;
+      authToken = null;
+      currentUser = null;
+      lastErrorMessage =
+          'Server is waking up from idle sleep (Render free tier). Please wait a moment and click Sign In again.';
+      return false;
     } catch (e) {
       isLoggedIn = false;
       authToken = null;

@@ -24,7 +24,7 @@ class ApiService {
     try {
       final response = await http
           .get(Uri.parse(_baseUrl), headers: _headers)
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 45));
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = jsonDecode(response.body);
@@ -50,7 +50,7 @@ class ApiService {
             headers: _headers,
             body: jsonEncode(vehicle.toJson()),
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 45));
 
       if (response.statusCode == 201 || response.statusCode == 200) {
         return Vehicle.fromJson(jsonDecode(response.body));
@@ -79,7 +79,7 @@ class ApiService {
             headers: _headers,
             body: jsonEncode(vehicle.toJson()),
           )
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 45));
 
       if (response.statusCode == 200) {
         return Vehicle.fromJson(jsonDecode(response.body));
@@ -104,7 +104,7 @@ class ApiService {
     try {
       final response = await http
           .delete(Uri.parse('$_baseUrl/$id'), headers: _headers)
-          .timeout(const Duration(seconds: 10));
+          .timeout(const Duration(seconds: 45));
 
       if (response.statusCode != 200 && response.statusCode != 204) {
         if (response.statusCode == 401) {
