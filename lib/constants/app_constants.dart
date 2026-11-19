@@ -4,10 +4,11 @@ class AppConstants {
   //
   // For local development, falls back to localhost:8080 automatically.
   // Never put production credentials or secrets in this file.
-  // Production API base URL (falls back to live Render backend)
+  // Defaults to localhost:8080 for local development.
+  // In Netlify CI/CD, the production URL is injected via --dart-define=API_BASE_URL=...
   static const String apiBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
-    defaultValue: 'https://vms-backend-jjch.onrender.com',
+    defaultValue: 'http://localhost:8080',
   );
 
   static const String vehiclesEndpoint = '$apiBaseUrl/api/vehicles';
