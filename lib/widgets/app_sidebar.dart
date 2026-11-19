@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import '../constants/app_routes.dart';
-import '../constants/app_theme.dart';
 import '../services/auth_service.dart';
-import 'app_logo.dart';
 
 enum NavPage { dashboard, vehicles }
 
-/// Item 1 in Business Application Layout:
-/// Left Sidebar Navigation using the Deep Blue (#1F4E79) and Corporate Blue (#5B9BD5) palette.
+/// Modern, sleek Left Sidebar Navigation for VehiclePro
+/// Styled with a dark slate palette (#0F172A / #1E293B) matching modern automotive SaaS portals.
 class AppSidebar extends StatelessWidget {
   final NavPage selectedPage;
   final ValueChanged<NavPage> onPageSelected;
   final VoidCallback onRegisterVehiclePressed;
   final bool isDrawer;
+  final int? vehicleCount;
 
   const AppSidebar({
     super.key,
@@ -20,208 +19,398 @@ class AppSidebar extends StatelessWidget {
     required this.onPageSelected,
     required this.onRegisterVehiclePressed,
     this.isDrawer = false,
+    this.vehicleCount,
   });
+
+  static const Color sidebarBg = Color(0xFF0F172A);      // Slate 900
+  static const Color sidebarCardBg = Color(0xFF1E293B);  // Slate 800
+  static const Color accentBlue = Color(0xFF2563EB);     // Blue 600
+  static const Color activeNavBg = Color(0xFF1E293B);    // Slate 800 active
+  static const Color textMuted = Color(0xFF94A3B8);      // Slate 400
+  static const Color borderDark = Color(0xFF334155);     // Slate 700
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 250,
+      width: 260,
       decoration: BoxDecoration(
-        color: AppColors.white,
+        color: sidebarBg,
         border: isDrawer
             ? null
-            : const Border(right: BorderSide(color: AppColors.border, width: 1)),
+            : const Border(right: BorderSide(color: Color(0xFF1E293B), width: 1)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // Sidebar Brand Header
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.xl,
-              AppSpacing.xl + 4,
-              AppSpacing.xl,
-              AppSpacing.lg,
-            ),
-            child: const AppLogo(iconSize: 24, isCompact: false),
-          ),
-          const Divider(height: 1),
-          const SizedBox(height: AppSpacing.md),
-
-          // Section Label
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl, vertical: AppSpacing.xs),
-            child: Text(
-              'MAIN NAVIGATION',
-              style: AppTypography.caption.copyWith(
-                fontSize: 10.5,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 0.8,
-                color: AppColors.deepBlue.withValues(alpha: 0.7),
-              ),
-            ),
-          ),
-          const SizedBox(height: AppSpacing.xs),
-
-          // Navigation Links
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-            child: Column(
-              children: [
-                _buildNavItem(
-                  icon: Icons.dashboard_outlined,
-                  activeIcon: Icons.dashboard_rounded,
-                  label: 'Dashboard',
-                  isSelected: selectedPage == NavPage.dashboard,
-                  onTap: () {
-                    onPageSelected(NavPage.dashboard);
-                    if (isDrawer) Navigator.of(context).pop();
-                  },
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                _buildNavItem(
-                  icon: Icons.directions_car_outlined,
-                  activeIcon: Icons.directions_car_filled_rounded,
-                  label: 'Vehicles',
-                  isSelected: selectedPage == NavPage.vehicles,
-                  onTap: () {
-                    onPageSelected(NavPage.vehicles);
-                    if (isDrawer) Navigator.of(context).pop();
-                  },
-                ),
-                const SizedBox(height: AppSpacing.xs),
-                _buildNavItem(
-                  icon: Icons.add_circle_outline_rounded,
-                  activeIcon: Icons.add_circle_rounded,
-                  label: 'Register Vehicle',
-                  isSelected: false,
-                  onTap: () {
-                    if (isDrawer) Navigator.of(context).pop();
-                    onRegisterVehiclePressed();
-                  },
-                ),
-              ],
-            ),
-          ),
-
-          const Spacer(),
-
-          // Bottom Section: Administrator Profile & Logout
-          const Divider(height: 1),
-          Padding(
-            padding: const EdgeInsets.all(AppSpacing.md),
-            child: Container(
-              padding: const EdgeInsets.all(AppSpacing.sm),
-              decoration: BoxDecoration(
-                color: AppColors.softGray,
-                borderRadius: BorderRadius.circular(AppSpacing.radiusInput),
-                border: Border.all(color: AppColors.border),
-              ),
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 1. Sleek Brand Header
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
               child: Row(
                 children: [
                   Container(
-                    width: 34,
-                    height: 34,
+                    width: 40,
+                    height: 40,
                     decoration: BoxDecoration(
-                      color: AppColors.primaryLight,
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.corporateBlue.withValues(alpha: 0.3)),
+                      gradient: const LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF3B82F6), Color(0xFF1D4ED8)],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: const Color(0xFF2563EB).withValues(alpha: 0.35),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
                     child: const Center(
-                      child: Icon(Icons.person, size: 18, color: AppColors.deepBlue),
+                      child: Icon(
+                        Icons.directions_car_filled_rounded,
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
                   ),
-                  const SizedBox(width: AppSpacing.sm + 2),
-                  Expanded(
+                  const SizedBox(width: 12),
+                  const Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          AuthService.currentUser ?? 'Admin',
-                          style: AppTypography.bodyMedium.copyWith(fontSize: 12.5),
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Text(
+                              'VehiclePro',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                letterSpacing: 0.3,
+                              ),
+                            ),
+                            SizedBox(width: 6),
+                            Text(
+                              'PRO',
+                              style: TextStyle(
+                                fontSize: 9.5,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFF60A5FA),
+                                letterSpacing: 0.8,
+                              ),
+                            ),
+                          ],
                         ),
-                        const Text(
-                          'Administrator',
+                        SizedBox(height: 1),
+                        Text(
+                          'Fleet Operations System',
                           style: TextStyle(
                             fontSize: 11,
-                            color: AppColors.textSecondary,
+                            color: textMuted,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.logout_outlined, size: 18, color: AppColors.red),
-                    tooltip: 'Sign Out',
-                    visualDensity: VisualDensity.compact,
-                    onPressed: () {
-                      AuthService().logout();
-                      Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+                ],
+              ),
+            ),
+
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16),
+              child: Divider(color: Color(0xFF1E293B), height: 1),
+            ),
+            const SizedBox(height: 16),
+
+            // 2. Primary Action Button: "+ Register Vehicle"
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: accentBlue,
+                  foregroundColor: Colors.white,
+                  elevation: 2,
+                  shadowColor: accentBlue.withValues(alpha: 0.4),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                icon: const Icon(Icons.add_rounded, size: 19),
+                label: const Text(
+                  'Register Vehicle',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 13,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+                onPressed: () {
+                  if (isDrawer) Navigator.of(context).pop();
+                  onRegisterVehiclePressed();
+                },
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            // 3. Section Label: NAVIGATION
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+              child: Text(
+                'MAIN NAVIGATION',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                  color: Color(0xFF64748B),
+                ),
+              ),
+            ),
+            const SizedBox(height: 6),
+
+            // 4. Navigation Links
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                children: [
+                  _buildNavItem(
+                    context: context,
+                    icon: Icons.grid_view_outlined,
+                    activeIcon: Icons.grid_view_rounded,
+                    label: 'Dashboard',
+                    isSelected: selectedPage == NavPage.dashboard,
+                    onTap: () {
+                      onPageSelected(NavPage.dashboard);
+                      if (isDrawer) Navigator.of(context).pop();
+                    },
+                  ),
+                  const SizedBox(height: 4),
+                  _buildNavItem(
+                    context: context,
+                    icon: Icons.directions_car_outlined,
+                    activeIcon: Icons.directions_car_filled_rounded,
+                    label: 'Vehicles',
+                    badgeText: vehicleCount != null ? '$vehicleCount' : null,
+                    isSelected: selectedPage == NavPage.vehicles,
+                    onTap: () {
+                      onPageSelected(NavPage.vehicles);
+                      if (isDrawer) Navigator.of(context).pop();
                     },
                   ),
                 ],
               ),
             ),
-          ),
-        ],
+
+            const Spacer(),
+
+            // 5. System Status Indicator
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: sidebarCardBg.withValues(alpha: 0.6),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: borderDark.withValues(alpha: 0.5)),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF10B981), // Green online
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFF10B981),
+                            blurRadius: 4,
+                            spreadRadius: 1,
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    const Expanded(
+                      child: Text(
+                        'Spring Boot Live',
+                        style: TextStyle(
+                          color: textMuted,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      'v1.0',
+                      style: TextStyle(
+                        color: Color(0xFF64748B),
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // 6. Modern User Profile Card & Sign Out
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                decoration: BoxDecoration(
+                  color: sidebarCardBg,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: borderDark),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF3B82F6), Color(0xFF1E40AF)],
+                        ),
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.white24, width: 1.5),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'A',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            AuthService.currentUser ?? 'Admin',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          const Text(
+                            'Administrator',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: textMuted,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.logout_rounded,
+                        size: 19,
+                        color: Color(0xFFEF4444), // Soft red logout
+                      ),
+                      tooltip: 'Sign Out',
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () {
+                        AuthService().logout();
+                        Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildNavItem({
+    required BuildContext context,
     required IconData icon,
     required IconData activeIcon,
     required String label,
     required bool isSelected,
     required VoidCallback onTap,
+    String? badgeText,
   }) {
     return Material(
       color: Colors.transparent,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusInput),
+      borderRadius: BorderRadius.circular(10),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusInput),
+        borderRadius: BorderRadius.circular(10),
+        hoverColor: const Color(0xFF1E293B).withValues(alpha: 0.5),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppSpacing.md,
-            vertical: AppSpacing.sm + 2,
-          ),
+          duration: const Duration(milliseconds: 180),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
           decoration: BoxDecoration(
-            color: isSelected ? AppColors.primaryLight : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppSpacing.radiusInput),
+            color: isSelected ? const Color(0xFF1E293B) : Colors.transparent,
+            borderRadius: BorderRadius.circular(10),
+            border: isSelected
+                ? Border.all(color: const Color(0xFF334155))
+                : Border.all(color: Colors.transparent),
           ),
           child: Row(
             children: [
               Icon(
                 isSelected ? activeIcon : icon,
                 size: 20,
-                color: isSelected ? AppColors.deepBlue : AppColors.textSecondary,
+                color: isSelected ? const Color(0xFF60A5FA) : textMuted,
               ),
-              const SizedBox(width: AppSpacing.md),
+              const SizedBox(width: 12),
               Expanded(
                 child: Text(
                   label,
                   style: TextStyle(
                     fontSize: 13.5,
                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                    color: isSelected ? AppColors.deepBlue : AppColors.charcoal,
-                    fontFamily: AppTypography.fontFamily,
+                    color: isSelected ? Colors.white : const Color(0xFFCBD5E1),
                   ),
                 ),
               ),
-              if (isSelected)
+              if (badgeText != null) ...[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? const Color(0xFF2563EB)
+                        : const Color(0xFF334155),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Text(
+                    badgeText,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ] else if (isSelected) ...[
                 Container(
                   width: 6,
                   height: 6,
                   decoration: const BoxDecoration(
-                    color: AppColors.corporateBlue,
+                    color: Color(0xFF60A5FA),
                     shape: BoxShape.circle,
                   ),
                 ),
+              ],
             ],
           ),
         ),

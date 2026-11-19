@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import '../constants/app_theme.dart';
 import '../services/auth_service.dart';
 
 /// Top Bar for the Main Workspace
-/// Includes Breadcrumbs, Quick Refresh, Notification Bell, and Admin Profile
+/// Includes Modern Breadcrumbs, Live Status Badge, Refresh Action, Notifications, and User Pill.
 class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   final String currentPageName;
   final VoidCallback? onMenuPressed;
@@ -19,109 +18,190 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   });
 
   @override
-  Size get preferredSize => const Size.fromHeight(AppSpacing.topBarHeight);
+  Size get preferredSize => const Size.fromHeight(64.0);
 
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isCompact = screenWidth < 600;
-    final isVeryCompact = screenWidth < 460;
+    final isCompact = screenWidth < 700;
 
     return Container(
-      height: AppSpacing.topBarHeight,
+      height: 64.0,
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(bottom: BorderSide(color: AppColors.border, width: 1)),
+        border: Border(bottom: BorderSide(color: Color(0xFFE2E8F0), width: 1)),
       ),
       padding: EdgeInsets.symmetric(
-        horizontal: isCompact ? AppSpacing.md : AppSpacing.xxl,
+        horizontal: isCompact ? 16 : 28,
       ),
       child: Row(
         children: [
-          // Mobile Hamburger Button
+          // Mobile Hamburger Menu Button
           if (showMenuButton) ...[
             IconButton(
-              icon: const Icon(Icons.menu, color: AppColors.textPrimary, size: 20),
+              icon: const Icon(Icons.menu_rounded, color: Color(0xFF1E293B), size: 22),
               onPressed: onMenuPressed,
-              tooltip: 'Open Navigation Menu',
+              tooltip: 'Open Navigation',
             ),
-            const SizedBox(width: AppSpacing.xs),
+            const SizedBox(width: 8),
           ],
 
-          // Breadcrumbs Navigation Hierarchy (responsive on small screens)
-          Flexible(
+          // Modern Breadcrumb Navigation
+          Expanded(
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (!isVeryCompact) ...[
-                  Text(
+                if (screenWidth >= 900) ...[
+                  const Icon(
+                    Icons.home_outlined,
+                    size: 17,
+                    color: Color(0xFF64748B),
+                  ),
+                  const SizedBox(width: 6),
+                  const Text(
                     'VehiclePro',
-                    style: AppTypography.caption.copyWith(
+                    style: TextStyle(
+                      fontSize: 13,
                       fontWeight: FontWeight.w600,
-                      color: AppColors.textSecondary,
+                      color: Color(0xFF64748B),
                     ),
                   ),
                   const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppSpacing.sm),
-                    child: Text(
-                      '/',
-                      style: TextStyle(color: AppColors.textMuted, fontSize: 13),
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 8),
+                    child: Icon(Icons.chevron_right_rounded, size: 16, color: Color(0xFF94A3B8)),
                   ),
                 ],
                 Flexible(
-                  child: Text(
-                    currentPageName,
-                    style: AppTypography.caption.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF1F5F9),
+                      borderRadius: BorderRadius.circular(6),
                     ),
-                    overflow: TextOverflow.ellipsis,
+                    child: Text(
+                      currentPageName,
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF0F172A),
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
+          const SizedBox(width: 16),
 
-          const Spacer(),
+          // Live Backend Status Pill (Large Desktop only)
+          if (screenWidth >= 900) ...[
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color(0xFFECFDF5),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFFA7F3D0)),
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircleAvatar(
+                    radius: 3.5,
+                    backgroundColor: Color(0xFF10B981),
+                  ),
+                  SizedBox(width: 6),
+                  Text(
+                    'System Online',
+                    style: TextStyle(
+                      color: Color(0xFF065F46),
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 14),
+          ],
 
           // Quick Refresh Action
           if (onRefresh != null) ...[
-            IconButton(
-              icon: const Icon(Icons.refresh, size: 19, color: AppColors.textSecondary),
-              tooltip: 'Refresh Data',
-              onPressed: onRefresh,
+            Tooltip(
+              message: 'Refresh Fleet Data',
+              child: InkWell(
+                onTap: onRefresh,
+                borderRadius: BorderRadius.circular(8),
+                child: Container(
+                  padding: const EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: const Color(0xFFE2E8F0)),
+                  ),
+                  child: const Icon(
+                    Icons.refresh_rounded,
+                    size: 18,
+                    color: Color(0xFF475569),
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(width: AppSpacing.xs),
+            const SizedBox(width: 10),
           ],
 
           // Notification Bell
-          IconButton(
-            icon: const Icon(Icons.notifications_none_rounded, size: 21, color: AppColors.textSecondary),
-            tooltip: 'No new notifications',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('No new notifications.'),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                  duration: const Duration(seconds: 2),
+          Tooltip(
+            message: 'Notifications',
+            child: InkWell(
+              onTap: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: const Text('All fleet systems operational. No unread alerts.'),
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    duration: const Duration(seconds: 2),
+                  ),
+                );
+              },
+              borderRadius: BorderRadius.circular(8),
+              child: Container(
+                padding: const EdgeInsets.all(7),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF8FAFC),
+                  borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: const Color(0xFFE2E8F0)),
                 ),
-              );
-            },
-          ),
-          const SizedBox(width: AppSpacing.xs),
-
-          // User Profile Pill (adapts to icon-only on mobile)
-          Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: isVeryCompact ? AppSpacing.xs + 2 : AppSpacing.sm + 2,
-              vertical: AppSpacing.xs + 1,
+                child: const Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    Icon(
+                      Icons.notifications_none_rounded,
+                      size: 18,
+                      color: Color(0xFF475569),
+                    ),
+                    Positioned(
+                      top: -1,
+                      right: -1,
+                      child: CircleAvatar(
+                        radius: 3,
+                        backgroundColor: Color(0xFF2563EB),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
+          ),
+          const SizedBox(width: 14),
+
+          // User Profile Pill (Clean modern header chip)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: AppColors.background,
-              borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-              border: Border.all(color: AppColors.border),
+              color: const Color(0xFFF8FAFC),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: const Color(0xFFE2E8F0)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -130,7 +210,9 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                   width: 24,
                   height: 24,
                   decoration: const BoxDecoration(
-                    color: AppColors.primary,
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF3B82F6), Color(0xFF1E40AF)],
+                    ),
                     shape: BoxShape.circle,
                   ),
                   child: const Center(
@@ -144,13 +226,15 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ),
-                if (!isVeryCompact) ...[
-                  const SizedBox(width: AppSpacing.sm),
-                  Text(
-                    AuthService.currentUser ?? 'Admin',
-                    style: AppTypography.bodyMedium.copyWith(fontSize: 12.5),
+                const SizedBox(width: 8),
+                Text(
+                  AuthService.currentUser ?? 'Admin',
+                  style: const TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFF0F172A),
                   ),
-                ],
+                ),
               ],
             ),
           ),

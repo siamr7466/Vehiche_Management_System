@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import '../constants/app_theme.dart';
 
-/// Matches the "Delete Action" component example in the unified design specification:
-/// Trash icon + "Delete" text in Red #D32F2F with soft light-red pill background.
+/// Modernized Delete Action Button
 class DeleteActionButton extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isCompact;
@@ -23,16 +21,16 @@ class DeleteActionButton extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           onTap: onPressed,
-          borderRadius: BorderRadius.circular(AppSpacing.radiusBadge),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
             padding: EdgeInsets.symmetric(
-              horizontal: isCompact ? AppSpacing.sm : AppSpacing.md,
-              vertical: isCompact ? AppSpacing.xs + 1 : AppSpacing.xs + 3,
+              horizontal: isCompact ? 8 : 12,
+              vertical: isCompact ? 6 : 7,
             ),
             decoration: BoxDecoration(
-              color: AppColors.deleteBg, // Soft Red tint
-              borderRadius: BorderRadius.circular(AppSpacing.radiusBadge),
-              border: Border.all(color: AppColors.deleteBorder, width: 1),
+              color: const Color(0xFFFEF2F2), // Soft Red 50
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: const Color(0xFFFECACA), width: 1),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
@@ -40,17 +38,16 @@ class DeleteActionButton extends StatelessWidget {
                 const Icon(
                   Icons.delete_outline_rounded,
                   size: 16,
-                  color: AppColors.red, // Red #D32F2F
+                  color: Color(0xFFDC2626), // Red 600
                 ),
                 if (!isCompact) ...[
-                  const SizedBox(width: AppSpacing.xs + 1),
+                  const SizedBox(width: 5),
                   const Text(
                     'Delete',
                     style: TextStyle(
-                      color: AppColors.red, // Red #D32F2F
+                      color: Color(0xFFDC2626),
                       fontWeight: FontWeight.bold,
-                      fontSize: 12.5,
-                      fontFamily: AppTypography.fontFamily,
+                      fontSize: 12,
                     ),
                   ),
                 ],
@@ -62,4 +59,3 @@ class DeleteActionButton extends StatelessWidget {
     );
   }
 }
-
