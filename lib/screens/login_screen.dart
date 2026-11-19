@@ -17,11 +17,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _obscurePassword = true;
   bool _isLoading = false;
+  bool _rememberMe = true;
   String? _errorMessage;
 
-  // Custom colors matching the "Positive Prime" design
-  static const Color primaryPurple = Color(0xFF635F9E); // #635F9E
-  static const Color backgroundPurple = Color(0xFF6767AB);
+  // Modern automotive styling palette
+  static const Color primaryDark = Color(0xFF0F172A); // Slate 900
+  static const Color accentRed = Color(0xFFEF4444);  // Red from Porsche Turbo S wing
+  static const Color panelBgStart = Color(0xFF090A0D);
+  static const Color panelBgEnd = Color(0xFF14171C);
 
   @override
   void dispose() {
@@ -64,7 +67,7 @@ class _LoginScreenState extends State<LoginScreen> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: const Row(
           children: [
-            Icon(Icons.lock_reset_rounded, color: primaryPurple, size: 22),
+            Icon(Icons.lock_reset_rounded, color: primaryDark, size: 22),
             SizedBox(width: 8),
             Text(
               'Forgot Password',
@@ -82,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
         actions: [
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: primaryPurple,
+              backgroundColor: primaryDark,
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             ),
@@ -115,65 +118,162 @@ class _LoginScreenState extends State<LoginScreen> {
 
           return Row(
             children: [
-              // 1. LEFT ART PANEL (Desktop viewports >= 850px)
+              // 1. LEFT ART PANEL: Sleek Porsche 911 Turbo S Blueprint (Desktop >= 850px)
               if (isDesktop)
                 Expanded(
                   flex: 5,
                   child: Container(
-                    color: backgroundPurple,
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Image.asset(
-                          'assets/images/login_side_art.png',
-                          fit: BoxFit.cover,
-                          alignment: Alignment.centerLeft,
-                          errorBuilder: (_, _, _) => Container(
-                            color: backgroundPurple,
-                            padding: const EdgeInsets.all(40),
-                            child: const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Icon(Icons.all_inclusive, color: Colors.white, size: 36),
-                                    SizedBox(width: 10),
-                                    Text(
-                                      'positive\nprime',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                        height: 1.1,
-                                      ),
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          panelBgStart,
+                          Color(0xFF0F1115),
+                          panelBgEnd,
+                        ],
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 44, vertical: 36),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Header: Brand & App Title
+                          Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.all(9),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.08),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
+                                ),
+                                child: const Icon(
+                                  Icons.directions_car_filled_rounded,
+                                  color: Colors.white,
+                                  size: 22,
+                                ),
+                              ),
+                              const SizedBox(width: 14),
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'VehiclePro',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      letterSpacing: 0.5,
                                     ),
-                                  ],
+                                  ),
+                                  Text(
+                                    'Fleet Management System',
+                                    style: TextStyle(
+                                      color: Colors.white54,
+                                      fontSize: 11,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+
+                          const Spacer(),
+
+                          // Rotated Porsche Blueprint Hero Graphic
+                          Center(
+                            child: Container(
+                              constraints: const BoxConstraints(maxWidth: 560),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.4),
+                                    blurRadius: 28,
+                                    offset: const Offset(0, 10),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: Image.asset(
+                                  'assets/images/porsche_blueprint.png',
+                                  fit: BoxFit.contain,
+                                  filterQuality: FilterQuality.high,
+                                  errorBuilder: (_, _, _) => const Icon(
+                                    Icons.directions_car_filled_outlined,
+                                    color: Colors.white24,
+                                    size: 64,
+                                  ),
                                 ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('Hey', style: TextStyle(color: Colors.white, fontSize: 24)),
-                                    Text('Welcome To', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                                    Text('Positive Prime', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+
+                          const Spacer(),
+
+                          // Footer: Technical Specs Tag
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'PORSCHE 911 TURBO S',
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 1.2,
+                                    ),
+                                  ),
+                                  SizedBox(height: 3),
+                                  Text(
+                                    'Precision Telemetry & Asset Control',
+                                    style: TextStyle(
+                                      color: Colors.white38,
+                                      fontSize: 11,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: accentRed.withValues(alpha: 0.12),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(color: accentRed.withValues(alpha: 0.4)),
+                                ),
+                                child: const Text(
+                                  'SCHEMATIC',
+                                  style: TextStyle(
+                                    color: accentRed,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
 
-              // 2. RIGHT FORM SECTION
+              // 2. RIGHT FORM SECTION: Clean Modern Pill Login
               Expanded(
                 flex: isDesktop ? 6 : 1,
                 child: SafeArea(
                   child: Center(
                     child: SingleChildScrollView(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+                      padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 28),
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 420),
                         child: Form(
@@ -184,24 +284,51 @@ class _LoginScreenState extends State<LoginScreen> {
                             children: [
                               // Mobile-only brand badge
                               if (!isDesktop) ...[
-                                const Center(
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
+                                Center(
+                                  child: Column(
                                     children: [
-                                      Icon(Icons.all_inclusive, color: primaryPurple, size: 32),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        'positive prime',
+                                      Container(
+                                        width: 52,
+                                        height: 52,
+                                        decoration: BoxDecoration(
+                                          color: primaryDark,
+                                          borderRadius: BorderRadius.circular(14),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: primaryDark.withValues(alpha: 0.25),
+                                              blurRadius: 12,
+                                              offset: const Offset(0, 4),
+                                            ),
+                                          ],
+                                        ),
+                                        child: const Icon(
+                                          Icons.directions_car_filled_rounded,
+                                          color: Colors.white,
+                                          size: 26,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 12),
+                                      const Text(
+                                        'VehiclePro',
                                         style: TextStyle(
                                           fontSize: 20,
                                           fontWeight: FontWeight.bold,
-                                          color: primaryPurple,
+                                          color: primaryDark,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      const Text(
+                                        'Vehicle Management System',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Color(0xFF64748B),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(height: 32),
+                                const SizedBox(height: 28),
                               ],
 
                               // Heading: Login
@@ -210,11 +337,19 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: TextStyle(
                                   fontSize: 28,
                                   fontWeight: FontWeight.bold,
-                                  color: Color(0xFF1E293B),
+                                  color: Color(0xFF0F172A),
                                   letterSpacing: -0.5,
                                 ),
                               ),
-                              const SizedBox(height: 28),
+                              const SizedBox(height: 6),
+                              const Text(
+                                'Enter your credentials to access the fleet dashboard',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Color(0xFF64748B),
+                                ),
+                              ),
+                              const SizedBox(height: 26),
 
                               // Backend Error Banner
                               if (_errorMessage != null) ...[
@@ -245,10 +380,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ],
 
-                              // Email / Username Input (Pill Shaped with Soft Neumorphic Shadow)
+                              // Email / Username Input (Pill Shaped with Soft Shadow)
                               _buildPillInputField(
                                 controller: _usernameController,
-                                hintText: 'Email',
+                                hintText: 'Email or Username',
                                 validator: (value) {
                                   if (value == null || value.trim().isEmpty) {
                                     return 'Email or username is required';
@@ -256,7 +391,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   return null;
                                 },
                               ),
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 18),
 
                               // Password Input (Pill Shaped with Soft Shadow)
                               _buildPillInputField(
@@ -283,50 +418,69 @@ class _LoginScreenState extends State<LoginScreen> {
                                 },
                                 onFieldSubmitted: (_) => _handleLogin(),
                               ),
-                              const SizedBox(height: 16),
+                              const SizedBox(height: 14),
 
-                              // Options Row: "Don't have account ? sign up" & "Forgot Password ?"
+                              // Keep me signed in & Forgot Password
                               Wrap(
                                 alignment: WrapAlignment.spaceBetween,
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 runSpacing: 8,
                                 spacing: 12,
                                 children: [
+                                  // Keep me signed in
                                   InkWell(
-                                    onTap: _showSignUpNotice,
+                                    onTap: () {
+                                      setState(() => _rememberMe = !_rememberMe);
+                                    },
                                     borderRadius: BorderRadius.circular(4),
-                                    child: const Text.rich(
-                                      TextSpan(
-                                        text: "Don't have account ? ",
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color: Color(0xFF64748B),
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: 'sign up',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: primaryPurple,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          width: 22,
+                                          height: 22,
+                                          child: Checkbox(
+                                            value: _rememberMe,
+                                            activeColor: primaryDark,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(4),
                                             ),
+                                            onChanged: (val) {
+                                              setState(() => _rememberMe = val ?? false);
+                                            },
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        const Text(
+                                          'Keep me signed in',
+                                          style: TextStyle(
+                                            fontSize: 12.5,
+                                            color: Color(0xFF475569),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
+
+                                  // Forgot Password link
                                   InkWell(
                                     onTap: _showForgotPasswordDialog,
-                                    child: const Text(
-                                      'Forgot Password ?',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xFF64748B),
+                                    borderRadius: BorderRadius.circular(4),
+                                    child: const Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 2),
+                                      child: Text(
+                                        'Forgot password?',
+                                        style: TextStyle(
+                                          fontSize: 12.5,
+                                          color: Color(0xFF64748B),
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 36),
+                              const SizedBox(height: 32),
 
                               // Centered Pill Button: LOGIN
                               Center(
@@ -335,10 +489,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                   height: 48,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: primaryPurple,
+                                      backgroundColor: primaryDark,
                                       foregroundColor: Colors.white,
-                                      elevation: 2,
-                                      shadowColor: primaryPurple.withValues(alpha: 0.4),
+                                      elevation: 3,
+                                      shadowColor: primaryDark.withValues(alpha: 0.35),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(24),
                                       ),
@@ -364,7 +518,34 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 48),
+                              const SizedBox(height: 36),
+
+                              // Don't have account row
+                              Center(
+                                child: InkWell(
+                                  onTap: _showSignUpNotice,
+                                  borderRadius: BorderRadius.circular(4),
+                                  child: const Text.rich(
+                                    TextSpan(
+                                      text: "Don't have an account ? ",
+                                      style: TextStyle(
+                                        fontSize: 12.5,
+                                        color: Color(0xFF64748B),
+                                      ),
+                                      children: [
+                                        TextSpan(
+                                          text: 'Sign up',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            color: primaryDark,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
 
                               // Footer: Support Contact
                               const Center(
@@ -374,15 +555,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                       'If you are having trouble please contact',
                                       style: TextStyle(
                                         fontSize: 12,
-                                        color: Color(0xFF64748B),
+                                        color: Color(0xFF94A3B8),
                                       ),
                                     ),
                                     SizedBox(height: 4),
                                     Text(
-                                      'support@positiveprime.com',
+                                      'support@vehiclepro.com',
                                       style: TextStyle(
                                         fontSize: 12.5,
-                                        color: primaryPurple,
+                                        color: primaryDark,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
@@ -455,7 +636,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
-            borderSide: const BorderSide(color: primaryPurple, width: 1.5),
+            borderSide: const BorderSide(color: primaryDark, width: 1.5),
           ),
           errorBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(30),
