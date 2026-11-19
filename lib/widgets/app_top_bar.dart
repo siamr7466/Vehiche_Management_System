@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/app_routes.dart';
 import '../services/auth_service.dart';
 
 /// Top Bar for the Main Workspace
@@ -195,47 +196,52 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           const SizedBox(width: 14),
 
-          // User Profile Pill (Clean modern header chip)
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-            decoration: BoxDecoration(
-              color: const Color(0xFFF8FAFC),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFFE2E8F0)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Color(0xFF3B82F6), Color(0xFF1E40AF)],
+          // User Profile Pill (or Sign In button if unauthenticated)
+          InkWell(
+            onTap: () {
+              if (!AuthService.isLoggedIn) {
+                Navigator.of(context).pushReplacementNamed(AppRoutes.login);
+              }
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFFE2E8F0)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 24,
+                    height: 24,
+                    decoration: BoxDecoration(
+                      gradient: AuthService.isLoggedIn
+                          ? const LinearGradient(colors: [Color(0xFF3B82F6), Color(0xFF1E40AF)])
+                          : const LinearGradient(colors: [Color(0xFF94A3B8), Color(0xFF64748B)]),
+                      shape: BoxShape.circle,
                     ),
-                    shape: BoxShape.circle,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'A',
-                      style: TextStyle(
+                    child: Center(
+                      child: Icon(
+                        AuthService.isLoggedIn ? Icons.person : Icons.lock_outline_rounded,
                         color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 11,
+                        size: 13,
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  AuthService.currentUser ?? 'Admin',
-                  style: const TextStyle(
-                    fontSize: 12.5,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF0F172A),
+                  const SizedBox(width: 8),
+                  Text(
+                    AuthService.isLoggedIn ? (AuthService.currentUser ?? 'Admin') : 'Sign In',
+                    style: TextStyle(
+                      fontSize: 12.5,
+                      fontWeight: FontWeight.bold,
+                      color: AuthService.isLoggedIn ? const Color(0xFF0F172A) : const Color(0xFF2563EB),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],

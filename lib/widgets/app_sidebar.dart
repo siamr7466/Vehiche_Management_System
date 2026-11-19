@@ -297,7 +297,7 @@ class AppSidebar extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text(
-                            AuthService.currentUser ?? 'Admin',
+                            AuthService.isLoggedIn ? (AuthService.currentUser ?? 'Admin') : 'Not Signed In',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 13,
@@ -305,9 +305,9 @@ class AppSidebar extends StatelessWidget {
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
-                          const Text(
-                            'Administrator',
-                            style: TextStyle(
+                          Text(
+                            AuthService.isLoggedIn ? 'Administrator' : 'Sign In Required',
+                            style: const TextStyle(
                               fontSize: 11,
                               color: textMuted,
                               fontWeight: FontWeight.w500,
@@ -317,15 +317,17 @@ class AppSidebar extends StatelessWidget {
                       ),
                     ),
                     IconButton(
-                      icon: const Icon(
-                        Icons.logout_rounded,
+                      icon: Icon(
+                        AuthService.isLoggedIn ? Icons.logout_rounded : Icons.login_rounded,
                         size: 19,
-                        color: Color(0xFFEF4444), // Soft red logout
+                        color: AuthService.isLoggedIn ? const Color(0xFFEF4444) : const Color(0xFF60A5FA),
                       ),
-                      tooltip: 'Sign Out',
+                      tooltip: AuthService.isLoggedIn ? 'Sign Out' : 'Sign In',
                       visualDensity: VisualDensity.compact,
                       onPressed: () {
-                        AuthService().logout();
+                        if (AuthService.isLoggedIn) {
+                          AuthService().logout();
+                        }
                         Navigator.of(context).pushReplacementNamed(AppRoutes.login);
                       },
                     ),

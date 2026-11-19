@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_constants.dart';
+import '../constants/app_routes.dart';
 import '../constants/app_theme.dart';
 import '../models/vehicle.dart';
 import '../services/vehicle_repository.dart';
@@ -64,7 +65,9 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
         _errorMessage = err;
         _isLoading = false;
       });
-      _showSnackBar(err, AppColors.inactive);
+      if (_vehicles.isNotEmpty) {
+        _showSnackBar(err, AppColors.inactive);
+      }
     }
   }
 
@@ -644,55 +647,94 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
   }
 
   Widget _buildErrorState() {
+    final isAuthError = _errorMessage != null &&
+        (_errorMessage!.toLowerCase().contains('session expired') ||
+            _errorMessage!.toLowerCase().contains('unauthorized') ||
+            _errorMessage!.toLowerCase().contains('authentication required'));
+
     return Center(
       child: Container(
-        padding: const EdgeInsets.all(32),
+        constraints: const BoxConstraints(maxWidth: 460),
+        padding: const EdgeInsets.all(36),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFFECACA)),
+          border: Border.all(
+            color: isAuthError ? const Color(0xFFFDE68A) : const Color(0xFFFECACA),
+          ),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x0A000000),
+              blurRadius: 16,
+              offset: Offset(0, 6),
+            ),
+          ],
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFEF2F2),
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: isAuthError ? const Color(0xFFFFFBEB) : const Color(0xFFFEF2F2),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
-                Icons.cloud_off_rounded,
-                size: 48,
-                color: Color(0xFFDC2626),
+              child: Icon(
+                isAuthError ? Icons.lock_clock_rounded : Icons.cloud_off_rounded,
+                size: 44,
+                color: isAuthError ? const Color(0xFFD97706) : const Color(0xFFDC2626),
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
-              'Unable to connect to backend',
-              style: TextStyle(
+            const SizedBox(height: 18),
+            Text(
+              isAuthError ? 'Session Expired' : 'Unable to connect to backend',
+              style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF0F172A),
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: 8),
             Text(
-              _errorMessage ?? 'Check if the backend server is reachable.',
+              isAuthError
+                  ? 'Your login session has expired or you are not signed in. Please sign in to continue managing vehicles.'
+                  : (_errorMessage ?? 'Check if the backend server is reachable.'),
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+              style: const TextStyle(fontSize: 13, color: Color(0xFF64748B), height: 1.4),
             ),
             const SizedBox(height: 24),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2563EB),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            if (isAuthError) ...[
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2563EB),
+                  foregroundColor: Colors.white,
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pushNamedAndRemoveUntil(
+                    AppRoutes.login,
+                    (route) => false,
+                  );
+                },
+                icon: const Icon(Icons.login_rounded, size: 18),
+                label: const Text('Sign In to Continue', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13.5)),
               ),
-              onPressed: _loadVehicles,
-              icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text('Retry Connection'),
-            ),
+            ] else ...[
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2563EB),
+                  foregroundColor: Colors.white,
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                ),
+                onPressed: _loadVehicles,
+                icon: const Icon(Icons.refresh_rounded, size: 18),
+                label: const Text('Retry Connection', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ],
           ],
         ),
       ),
