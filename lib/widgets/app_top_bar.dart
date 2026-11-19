@@ -95,37 +95,6 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
           ),
           const SizedBox(width: 16),
 
-          // Live Backend Status Pill (Large Desktop only)
-          if (screenWidth >= 900) ...[
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-              decoration: BoxDecoration(
-                color: const Color(0xFFECFDF5),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFFA7F3D0)),
-              ),
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  CircleAvatar(
-                    radius: 3.5,
-                    backgroundColor: Color(0xFF10B981),
-                  ),
-                  SizedBox(width: 6),
-                  Text(
-                    'System Online',
-                    style: TextStyle(
-                      color: Color(0xFF065F46),
-                      fontSize: 11.5,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 14),
-          ],
-
           // Quick Refresh Action
           if (onRefresh != null) ...[
             Tooltip(

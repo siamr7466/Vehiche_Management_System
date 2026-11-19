@@ -986,43 +986,20 @@ class _VehicleListScreenState extends State<VehicleListScreen> {
                 ),
               ),
 
-              // Modern Table Footer: Summary & Real-time Indicator
+              // Table Footer: Summary
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                 decoration: const BoxDecoration(
                   color: Color(0xFFF8FAFC),
                   border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Showing ${filtered.length} of ${_vehicles.length} registered vehicles',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Color(0xFF64748B),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: _loadVehicles,
-                      borderRadius: BorderRadius.circular(6),
-                      child: const Row(
-                        children: [
-                          Icon(Icons.sync_rounded, size: 14, color: Color(0xFF2563EB)),
-                          SizedBox(width: 4),
-                          Text(
-                            'Synced with server',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Color(0xFF2563EB),
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  'Showing ${filtered.length} of ${_vehicles.length} registered vehicles',
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Color(0xFF64748B),
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
             ],
